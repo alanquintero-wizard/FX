@@ -203,68 +203,34 @@
 <script>
 const API = 'https://www.thesportsdb.com/api/v1/json/123';
 
-// Grupos de competiciones a trackear.
-// "match" es una lista de fragmentos de texto (en el nombre real de TheSportsDB)
-// usados para encontrar la liga correcta dentro del catálogo completo.
+// IDs verificados directamente de TheSportsDB (las copas/torneos internacionales
+// no aparecen en el catálogo general all_leagues.php del nivel gratuito,
+// así que usamos el ID exacto de cada competición).
 const TRACKS = {
   mexico: [
-    { name: 'Liga MX', match: ['mexican primera division', 'liga mx', 'mexico primera division'] }
+    { name: 'Liga MX', id: '4350' }
   ],
   europa: [
-    { name: 'Premier League (Inglaterra)', match: ['english premier league'] },
-    { name: 'La Liga (España)', match: ['spanish la liga', 'la liga', 'laliga'] },
-    { name: 'Serie A (Italia)', match: ['italian serie a'] },
-    { name: 'Bundesliga (Alemania)', match: ['german bundesliga'] },
-    { name: 'Ligue 1 (Francia)', match: ['french ligue 1', 'ligue 1', 'ligue1'] }
+    { name: 'Premier League (Inglaterra)', id: '4328' },
+    { name: 'La Liga (España)', id: '4335' },
+    { name: 'Serie A (Italia)', id: '4332' },
+    { name: 'Bundesliga (Alemania)', id: '4331' },
+    { name: 'Ligue 1 (Francia)', id: '4334' }
   ],
   copas: [
-    { name: 'UEFA Champions League', match: ['uefa champions league'] },
-    { name: 'UEFA Europa League', match: ['uefa europa league'] },
-    { name: 'Concacaf Champions Cup', match: ['concacaf champions'] },
-    { name: 'Copa Libertadores', match: ['copa libertadores', 'conmebol libertadores'] },
-    { name: 'Copa Sudamericana', match: ['copa sudamericana', 'conmebol sudamericana'] },
-    { name: 'Copa América', match: ['copa america'] },
-    { name: 'Mundial de Clubes FIFA', match: ['fifa club world cup', 'club world cup'] }
+    { name: 'UEFA Champions League', id: '4480' },
+    { name: 'UEFA Europa League', id: '4481' },
+    { name: 'Concacaf Champions Cup', id: '4721' },
+    { name: 'Copa Libertadores', id: '4501' },
+    { name: 'Copa Sudamericana', id: '4724' },
+    { name: 'Copa América', id: '4499' },
+    { name: 'Mundial de Clubes FIFA', id: '4503' }
   ]
 };
 
 const grid = document.getElementById('grid');
 const tickerEl = document.getElementById('ticker');
 let tickerItems = [];
-
-// Catálogo completo de ligas, se descarga una sola vez y se reutiliza.
-let leagueCatalog = null;
-async function getLeagueCatalog(){
-  if (leagueCatalog) return leagueCatalog;
-  try{
-    const res = await fetch(`${API}/all_leagues.php`);
-    const data = await res.json();
-    leagueCatalog = (data && data.leagues) ? data.leagues : [];
-  }catch(e){
-    leagueCatalog = [];
-  }
-  return leagueCatalog;
-}
-
-function normalize(str){
-  return (str || '')
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
-    .replace(/[^a-z0-9]/g, ''); // quita espacios y puntuación
-}
-
-async function findLeagueId(matchFragments){
-  const catalog = await getLeagueCatalog();
-  for (const frag of matchFragments){
-    const fragNorm = normalize(frag);
-    const found = catalog.find(l =>
-      l.strSport === 'Soccer' &&
-      normalize(l.strLeague).includes(fragNorm)
-    );
-    if (found) return found.idLeague;
-  }
-  return null;
-}
 
 function fmtDate(dateStr, timeStr){
   if(!dateStr) return '';
@@ -284,11 +250,11 @@ async function loadCompetition(comp){
   `;
   grid.appendChild(card);
 
-  const id = await findLeagueId(comp.match);
+  const id = comp.id;
   const statusLine = card.querySelector('.status-line');
 
   if (!id){
-    statusLine.textContent = `No se encontró "${comp.name}" en el catálogo de TheSportsDB.`;
+    statusLine.textContent = `No se encontró "${comp.name}".`;
     statusLine.classList.remove('loading');
     return;
   }
