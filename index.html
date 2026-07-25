@@ -11,15 +11,12 @@
     --pitch:#0B3D2E;
     --pitch-deep:#071F18;
     --navy:#101728;
-    --card:#0F1A16;
     --chalk:#F5F3EA;
     --sage:#8FA695;
-    --sage-dim:#8FA69588;
     --amber:#F2A93B;
     --amber-dim:#F2A93B22;
     --line:#ffffff14;
     --line-strong:#ffffff26;
-    --win:#4CAF7D;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -31,232 +28,120 @@
     min-height:100vh;
     padding-bottom:60px;
   }
-  header.top{
-    padding:30px 20px 16px;
-    text-align:center;
-  }
+  header.top{padding:30px 20px 16px; text-align:center;}
   header.top h1{
-    font-family:'Oswald',sans-serif;
-    font-weight:700;
-    letter-spacing:2px;
-    font-size:clamp(28px,6vw,42px);
-    text-transform:uppercase;
+    font-family:'Oswald',sans-serif; font-weight:700; letter-spacing:2px;
+    font-size:clamp(28px,6vw,42px); text-transform:uppercase;
   }
   header.top h1 span{color:var(--amber);}
   header.top p{
-    font-family:'Space Mono',monospace;
-    color:var(--sage);
-    font-size:11px;
-    margin-top:6px;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
+    font-family:'Space Mono',monospace; color:var(--sage); font-size:11px;
+    margin-top:6px; letter-spacing:1.5px; text-transform:uppercase;
   }
 
   .ticker-wrap{
-    background:var(--navy);
-    border-top:1px solid var(--line-strong);
-    border-bottom:1px solid var(--amber);
-    overflow:hidden;
-    white-space:nowrap;
-    padding:9px 0;
+    background:var(--navy); border-top:1px solid var(--line-strong);
+    border-bottom:1px solid var(--amber); overflow:hidden; white-space:nowrap; padding:9px 0;
   }
-  .ticker{
-    display:inline-block;
-    font-family:'Space Mono',monospace;
-    font-size:12px;
-    animation:scroll 50s linear infinite;
-  }
+  .ticker{display:inline-block; font-family:'Space Mono',monospace; font-size:12px; animation:scroll 50s linear infinite;}
   .ticker span{margin-right:36px; color:var(--sage);}
   .ticker span b{color:var(--amber); font-weight:normal;}
   @keyframes scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
   @media (prefers-reduced-motion: reduce){.ticker{animation:none;}}
 
   nav.tracks{
-    display:flex;
-    justify-content:center;
-    gap:6px;
-    padding:20px 14px 8px;
-    flex-wrap:wrap;
-    position:sticky;
-    top:0;
-    background:var(--pitch-deep);
-    z-index:10;
+    display:flex; justify-content:center; gap:6px; padding:20px 14px 8px; flex-wrap:wrap;
+    position:sticky; top:0; background:var(--pitch-deep); z-index:10;
   }
   nav.tracks button{
-    font-family:'Oswald',sans-serif;
-    font-size:12.5px;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    background:transparent;
-    border:1px solid var(--line-strong);
-    color:var(--sage);
-    padding:9px 16px;
-    border-radius:3px;
-    cursor:pointer;
-    transition:all .18s ease;
+    font-family:'Oswald',sans-serif; font-size:12.5px; letter-spacing:1px; text-transform:uppercase;
+    background:transparent; border:1px solid var(--line-strong); color:var(--sage);
+    padding:9px 16px; border-radius:3px; cursor:pointer; transition:all .18s ease;
   }
   nav.tracks button:hover{color:var(--chalk); border-color:var(--amber);}
-  nav.tracks button.active{
-    background:var(--amber);
-    color:var(--pitch-deep);
-    border-color:var(--amber);
-    font-weight:600;
-  }
+  nav.tracks button.active{background:var(--amber); color:var(--pitch-deep); border-color:var(--amber); font-weight:600;}
   nav.tracks button:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
 
   main{max-width:900px; margin:0 auto; padding:14px 16px 20px;}
 
-  /* --- Accordion competition cards --- */
   .comp-grid{display:flex; flex-direction:column; gap:10px;}
   details.comp-card{
     background:linear-gradient(180deg, #ffffff07, #ffffff02);
-    border:1px solid var(--line-strong);
-    border-radius:8px;
-    overflow:hidden;
+    border:1px solid var(--line-strong); border-radius:8px; overflow:hidden;
   }
   details.comp-card[open]{border-color:var(--amber-dim);}
   details.comp-card summary{
-    list-style:none;
-    cursor:pointer;
-    padding:15px 16px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
+    list-style:none; cursor:pointer; padding:15px 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
   }
   details.comp-card summary::-webkit-details-marker{display:none;}
   .summary-left{display:flex; align-items:center; gap:10px; min-width:0;}
   .summary-left .dot{width:7px;height:7px;border-radius:50%;background:var(--amber); flex-shrink:0;}
   .summary-left h2{
-    font-family:'Oswald',sans-serif;
-    font-size:15.5px;
-    text-transform:uppercase;
-    letter-spacing:0.4px;
+    font-family:'Oswald',sans-serif; font-size:15.5px; text-transform:uppercase; letter-spacing:0.4px;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .chevron{
-    font-size:11px; color:var(--sage); flex-shrink:0;
-    transition:transform .2s ease;
-  }
+  .chevron{font-size:11px; color:var(--sage); flex-shrink:0; transition:transform .2s ease;}
   details.comp-card[open] .chevron{transform:rotate(180deg);}
 
   .card-body{padding:0 16px 16px;}
 
   .mini-tabs{display:flex; gap:6px; margin-bottom:12px;}
   .mini-tabs button{
-    font-family:'Space Mono',monospace;
-    font-size:10.5px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    background:transparent;
-    border:1px solid var(--line);
-    color:var(--sage);
-    padding:5px 12px;
-    border-radius:20px;
-    cursor:pointer;
+    font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.5px; text-transform:uppercase;
+    background:transparent; border:1px solid var(--line); color:var(--sage);
+    padding:5px 12px; border-radius:20px; cursor:pointer;
   }
-  .mini-tabs button.active{
-    background:var(--amber-dim);
-    border-color:var(--amber);
-    color:var(--amber);
-  }
+  .mini-tabs button.active{background:var(--amber-dim); border-color:var(--amber); color:var(--amber);}
 
   .match{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:8px 0;
-    border-top:1px solid var(--line);
-    font-size:13px;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 0; border-top:1px solid var(--line); font-size:13px;
   }
   .match:first-of-type{border-top:none;}
   .match .teams{color:var(--chalk);}
   .match .when{
-    font-family:'Space Mono',monospace;
-    color:var(--amber);
-    font-size:11.5px;
-    white-space:nowrap;
-    margin-left:10px;
+    font-family:'Space Mono',monospace; color:var(--amber); font-size:11.5px;
+    white-space:nowrap; margin-left:10px; text-align:right;
   }
-  .empty-note, .status-line{
-    color:var(--sage);
-    font-size:12.5px;
-  }
+  .match .when small{display:block; color:var(--sage); font-size:9.5px;}
+
+  .empty-note, .status-line{color:var(--sage); font-size:12.5px;}
   .status-line.loading{font-family:'Space Mono',monospace; font-size:11px;}
 
-  table.standings{
-    width:100%;
-    border-collapse:collapse;
-    font-size:12px;
+  .group-label{
+    font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.5px;
+    text-transform:uppercase; color:var(--amber); margin:12px 0 6px;
   }
+  .group-label:first-child{margin-top:0;}
+
+  table.standings{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:4px;}
   table.standings th{
-    text-align:left;
-    font-family:'Space Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    color:var(--sage);
-    padding:5px 4px;
-    border-bottom:1px solid var(--line-strong);
+    text-align:left; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px;
+    text-transform:uppercase; color:var(--sage); padding:5px 4px; border-bottom:1px solid var(--line-strong);
   }
-  table.standings td{
-    padding:6px 4px;
-    border-bottom:1px solid var(--line);
-    white-space:nowrap;
-  }
-  table.standings td.team{
-    white-space:normal;
-    color:var(--chalk);
-  }
+  table.standings td{padding:6px 4px; border-bottom:1px solid var(--line); white-space:nowrap;}
+  table.standings td.team{white-space:normal; color:var(--chalk);}
   table.standings td.num, table.standings th.num{text-align:center;}
   table.standings td.pts{color:var(--amber); font-weight:600; text-align:center;}
   table.standings tr:last-child td{border-bottom:none;}
 
-  /* --- Todos los partidos tab --- */
   .all-matches{display:flex; flex-direction:column; gap:8px;}
   .all-match{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
     background:linear-gradient(180deg, #ffffff07, #ffffff02);
-    border:1px solid var(--line-strong);
-    border-radius:6px;
-    padding:12px 14px;
+    border:1px solid var(--line-strong); border-radius:6px; padding:12px 14px;
   }
   .all-match .info{min-width:0;}
   .all-match .comp-tag{
-    font-family:'Space Mono',monospace;
-    font-size:9.5px;
-    letter-spacing:0.5px;
-    text-transform:uppercase;
-    color:var(--amber);
-    display:block;
-    margin-bottom:3px;
+    font-family:'Space Mono',monospace; font-size:9.5px; letter-spacing:0.5px; text-transform:uppercase;
+    color:var(--amber); display:block; margin-bottom:3px;
   }
-  .all-match .teams{
-    font-size:13.5px;
-    color:var(--chalk);
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .all-match .when{
-    font-family:'Space Mono',monospace;
-    font-size:12px;
-    color:var(--sage);
-    text-align:right;
-    white-space:nowrap;
-    flex-shrink:0;
-  }
+  .all-match .teams{font-size:13.5px; color:var(--chalk); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .all-match .when{font-family:'Space Mono',monospace; font-size:12px; color:var(--sage); text-align:right; white-space:nowrap; flex-shrink:0;}
   .all-match .when b{display:block; color:var(--amber); font-size:13px;}
 
-  footer{
-    text-align:center;
-    color:var(--sage);
-    font-family:'Space Mono',monospace;
-    font-size:11px;
-    margin-top:30px;
-    padding:0 20px;
-  }
+  footer{text-align:center; color:var(--sage); font-family:'Space Mono',monospace; font-size:11px; margin-top:30px; padding:0 20px;}
 </style>
 </head>
 <body>
@@ -281,33 +166,37 @@
   <div class="comp-grid" id="grid"></div>
 </main>
 
-<footer>Datos vía TheSportsDB · actualiza al recargar la página</footer>
+<footer>Datos vía API-Football · plan gratuito: 100 peticiones/día</footer>
 
 <script>
-const API = 'https://www.thesportsdb.com/api/v1/json/123';
+// ⚠️ Esta llave queda visible en el código fuente (inevitable en una app que
+// corre en el navegador). Restringe el uso agregando tu dominio de GitHub
+// Pages en el dashboard de API-Football → Security → Allowed referrers.
+const API_KEY = 'c1a3d17823eb72e232cd028f8b724536';
+const API_BASE = 'https://v3.football.api-sports.io';
+const HEADERS = { 'x-apisports-key': API_KEY };
 
-// IDs verificados directamente de TheSportsDB. "season" se usa para la tabla
-// de posiciones (lookuptable.php) — las copas de eliminación directa o fuera
-// de ciclo pueden no tener tabla disponible.
+// Competiciones a trackear. "search" es el texto para buscar la liga por
+// nombre; "country" ayuda a desambiguar cuando hay varias coincidencias.
 const TRACKS = {
   mexico: [
-    { name: 'Liga MX', id: '4350', season: '2025-2026' }
+    { name: 'Liga MX', search: 'Liga MX', country: 'Mexico' }
   ],
   europa: [
-    { name: 'Premier League (Inglaterra)', id: '4328', season: '2025-2026' },
-    { name: 'La Liga (España)', id: '4335', season: '2025-2026' },
-    { name: 'Serie A (Italia)', id: '4332', season: '2025-2026' },
-    { name: 'Bundesliga (Alemania)', id: '4331', season: '2025-2026' },
-    { name: 'Ligue 1 (Francia)', id: '4334', season: '2025-2026' }
+    { name: 'Premier League (Inglaterra)', search: 'Premier League', country: 'England' },
+    { name: 'La Liga (España)', search: 'La Liga', country: 'Spain' },
+    { name: 'Serie A (Italia)', search: 'Serie A', country: 'Italy' },
+    { name: 'Bundesliga (Alemania)', search: 'Bundesliga', country: 'Germany' },
+    { name: 'Ligue 1 (Francia)', search: 'Ligue 1', country: 'France' }
   ],
   copas: [
-    { name: 'UEFA Champions League', id: '4480', season: '2025-2026' },
-    { name: 'UEFA Europa League', id: '4481', season: '2025-2026' },
-    { name: 'Concacaf Champions Cup', id: '4721', season: '2026' },
-    { name: 'Copa Libertadores', id: '4501', season: '2026' },
-    { name: 'Copa Sudamericana', id: '4724', season: '2026' },
-    { name: 'Copa América', id: '4499', season: '2024' },
-    { name: 'Mundial de Clubes FIFA', id: '4503', season: '2025' }
+    { name: 'UEFA Champions League', search: 'UEFA Champions League' },
+    { name: 'UEFA Europa League', search: 'UEFA Europa League' },
+    { name: 'Concacaf Champions Cup', search: 'CONCACAF Champions' },
+    { name: 'Copa Libertadores', search: 'Copa Libertadores' },
+    { name: 'Copa Sudamericana', search: 'Copa Sudamericana' },
+    { name: 'Copa América', search: 'Copa America' },
+    { name: 'Mundial de Clubes FIFA', search: 'Club World Cup' }
   ]
 };
 const ALL_COMPS = [...TRACKS.mexico, ...TRACKS.europa, ...TRACKS.copas];
@@ -316,29 +205,66 @@ const grid = document.getElementById('grid');
 const tickerEl = document.getElementById('ticker');
 let tickerItems = [];
 
-function fmtDate(dateStr, timeStr){
-  if(!dateStr) return '';
-  try{
-    const d = new Date(`${dateStr}T${timeStr || '00:00:00'}`);
-    return d.toLocaleDateString('es-MX', {day:'2-digit', month:'short'}) +
-      (timeStr ? ' · ' + d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}) : '');
-  }catch(e){ return dateStr; }
-}
-
-async function fetchJSON(url){
-  const res = await fetch(url);
+async function apiGet(path){
+  const res = await fetch(`${API_BASE}${path}`, { headers: HEADERS });
   if (!res.ok){
     const err = new Error('HTTP ' + res.status);
     err.status = res.status;
     throw err;
   }
-  return res.json();
+  const data = await res.json();
+  if (data.errors && Object.keys(data.errors).length){
+    const err = new Error(JSON.stringify(data.errors));
+    err.apiError = data.errors;
+    throw err;
+  }
+  return data;
 }
 
 function errMessage(e){
-  if (e && e.status === 429) return 'Límite de la API alcanzado (llave compartida). Intenta en un minuto.';
-  if (e && e.status) return `Error al consultar TheSportsDB (código ${e.status}).`;
-  return 'No se pudo conectar con TheSportsDB.';
+  if (e && e.status === 429) return 'Límite diario de la API alcanzado (100/día en el plan gratuito).';
+  if (e && e.status === 401) return 'Llave de API inválida o no autorizada para este dominio.';
+  if (e && e.apiError) return 'La API rechazó la consulta: ' + JSON.stringify(e.apiError);
+  if (e && e.status) return `Error al consultar la API (código ${e.status}).`;
+  return 'No se pudo conectar con la API.';
+}
+
+function fmtDate(iso){
+  try{
+    const d = new Date(iso);
+    return {
+      date: d.toLocaleDateString('es-MX', {day:'2-digit', month:'short'}),
+      time: d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})
+    };
+  }catch(e){ return {date:'', time:''}; }
+}
+
+// ---------- Resolución de liga + temporada actual (se cachea) ----------
+const leagueCache = {};
+async function resolveLeague(comp){
+  const cacheKey = comp.search + '|' + (comp.country || '');
+  if (leagueCache[cacheKey]) return leagueCache[cacheKey];
+
+  const data = await apiGet(`/leagues?search=${encodeURIComponent(comp.search)}`);
+  let candidates = data.response || [];
+  if (comp.country){
+    const filtered = candidates.filter(c => c.country && c.country.name === comp.country);
+    if (filtered.length) candidates = filtered;
+  }
+  if (!candidates.length){
+    leagueCache[cacheKey] = null;
+    return null;
+  }
+  const chosen = candidates[0];
+  const seasons = chosen.seasons || [];
+  let season = seasons.find(s => s.current) || seasons[seasons.length - 1];
+  const resolved = {
+    id: chosen.league.id,
+    year: season ? season.year : null,
+    officialName: chosen.league.name
+  };
+  leagueCache[cacheKey] = resolved;
+  return resolved;
 }
 
 // ---------- Tarjeta de competición (acordeón) ----------
@@ -347,10 +273,7 @@ function buildCompCard(comp){
   details.className = 'comp-card';
   details.innerHTML = `
     <summary>
-      <div class="summary-left">
-        <span class="dot"></span>
-        <h2>${comp.name}</h2>
-      </div>
+      <div class="summary-left"><span class="dot"></span><h2>${comp.name}</h2></div>
       <span class="chevron">▾</span>
     </summary>
     <div class="card-body">
@@ -358,12 +281,8 @@ function buildCompCard(comp){
         <button data-view="matches" class="active">Partidos</button>
         <button data-view="table">Tabla</button>
       </div>
-      <div class="view-matches">
-        <div class="status-line loading">Cargando…</div>
-      </div>
-      <div class="view-table" style="display:none;">
-        <div class="status-line loading">Cargando…</div>
-      </div>
+      <div class="view-matches"><div class="status-line loading">Cargando…</div></div>
+      <div class="view-table" style="display:none;"><div class="status-line loading">Cargando…</div></div>
     </div>
   `;
   grid.appendChild(details);
@@ -379,19 +298,25 @@ function buildCompCard(comp){
     if (matchesLoaded) return;
     matchesLoaded = true;
     try{
-      const data = await fetchJSON(`${API}/eventsnextleague.php?id=${comp.id}`);
-      const events = (data && data.events) ? data.events.slice(0,6) : [];
-      if (!events.length){
+      const league = await resolveLeague(comp);
+      if (!league || !league.year){
+        viewMatches.innerHTML = `<div class="empty-note">No se encontró "${comp.name}" en API-Football.</div>`;
+        return;
+      }
+      const data = await apiGet(`/fixtures?league=${league.id}&season=${league.year}&next=6`);
+      const fixtures = data.response || [];
+      if (!fixtures.length){
         viewMatches.innerHTML = `<div class="empty-note">Sin partidos próximos programados (puede estar en receso).</div>`;
         return;
       }
       viewMatches.innerHTML = '';
-      events.forEach(ev => {
+      fixtures.forEach(fx => {
+        const {date, time} = fmtDate(fx.fixture.date);
         const row = document.createElement('div');
         row.className = 'match';
         row.innerHTML = `
-          <span class="teams">${ev.strHomeTeam} vs ${ev.strAwayTeam}</span>
-          <span class="when">${fmtDate(ev.dateEvent, ev.strTime)}</span>
+          <span class="teams">${fx.teams.home.name} vs ${fx.teams.away.name}</span>
+          <span class="when">${date}<small>${time}</small></span>
         `;
         viewMatches.appendChild(row);
       });
@@ -404,46 +329,52 @@ function buildCompCard(comp){
     if (tableLoaded) return;
     tableLoaded = true;
     try{
-      const data = await fetchJSON(`${API}/lookuptable.php?l=${comp.id}&s=${comp.season}`);
-      const rows = (data && data.table) ? data.table : [];
-      if (!rows.length){
-        viewTable.innerHTML = `<div class="empty-note">Tabla no disponible para esta competición (torneo de eliminación directa o fuera de temporada).</div>`;
+      const league = await resolveLeague(comp);
+      if (!league || !league.year){
+        viewTable.innerHTML = `<div class="empty-note">No se encontró "${comp.name}" en API-Football.</div>`;
         return;
       }
-      let html = `<table class="standings"><thead><tr>
-        <th class="num">#</th><th>Equipo</th><th class="num">PJ</th><th class="num">DG</th><th class="num">Pts</th>
-      </tr></thead><tbody>`;
-      rows.forEach(r => {
-        html += `<tr>
-          <td class="num">${r.intRank}</td>
-          <td class="team">${r.strTeam}</td>
-          <td class="num">${r.intPlayed}</td>
-          <td class="num">${r.intGoalDifference}</td>
-          <td class="pts">${r.intPoints}</td>
-        </tr>`;
+      const data = await apiGet(`/standings?league=${league.id}&season=${league.year}`);
+      const leagueData = data.response && data.response[0] ? data.response[0].league : null;
+      const groups = leagueData && leagueData.standings ? leagueData.standings : [];
+      if (!groups.length || !groups[0].length){
+        viewTable.innerHTML = `<div class="empty-note">Tabla no disponible (torneo de eliminación directa o fuera de temporada).</div>`;
+        return;
+      }
+      let html = '';
+      groups.forEach((group, gi) => {
+        if (groups.length > 1) html += `<div class="group-label">Grupo ${gi + 1}</div>`;
+        html += `<table class="standings"><thead><tr>
+          <th class="num">#</th><th>Equipo</th><th class="num">PJ</th><th class="num">DG</th><th class="num">Pts</th>
+        </tr></thead><tbody>`;
+        group.forEach(r => {
+          html += `<tr>
+            <td class="num">${r.rank}</td>
+            <td class="team">${r.team.name}</td>
+            <td class="num">${r.all.played}</td>
+            <td class="num">${r.goalsDiff}</td>
+            <td class="pts">${r.points}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
       });
-      html += '</tbody></table>';
       viewTable.innerHTML = html;
     }catch(e){
       viewTable.innerHTML = `<div class="empty-note">${errMessage(e)}</div>`;
     }
   }
 
-  details.addEventListener('toggle', () => {
-    if (details.open) loadMatches();
-  });
+  details.addEventListener('toggle', () => { if (details.open) loadMatches(); });
 
   miniTabs.forEach(btn => {
     btn.addEventListener('click', () => {
       miniTabs.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (btn.dataset.view === 'matches'){
-        viewMatches.style.display = '';
-        viewTable.style.display = 'none';
+        viewMatches.style.display = ''; viewTable.style.display = 'none';
         loadMatches();
       } else {
-        viewMatches.style.display = 'none';
-        viewTable.style.display = '';
+        viewMatches.style.display = 'none'; viewTable.style.display = '';
         loadTable();
       }
     });
@@ -460,18 +391,14 @@ async function buildAllMatchesView(){
   const results = [];
   for (const comp of ALL_COMPS){
     try{
-      const data = await fetchJSON(`${API}/eventsnextleague.php?id=${comp.id}`);
-      const events = (data && data.events) ? data.events.slice(0,5) : [];
-      events.forEach(ev => results.push({ comp, ev }));
-    }catch(e){ /* se omite silenciosamente esta competición en la vista combinada */ }
-    await new Promise(r => setTimeout(r, 300));
+      const league = await resolveLeague(comp);
+      if (!league || !league.year) continue;
+      const data = await apiGet(`/fixtures?league=${league.id}&season=${league.year}&next=5`);
+      (data.response || []).forEach(fx => results.push({ comp, fx }));
+    }catch(e){ /* se omite esta competición en la vista combinada si falla */ }
   }
 
-  results.sort((a,b) => {
-    const da = new Date(`${a.ev.dateEvent}T${a.ev.strTime || '00:00:00'}`);
-    const db = new Date(`${b.ev.dateEvent}T${b.ev.strTime || '00:00:00'}`);
-    return da - db;
-  });
+  results.sort((a,b) => new Date(a.fx.fixture.date) - new Date(b.fx.fixture.date));
 
   if (!results.length){
     grid.innerHTML = `<div class="empty-note">No se encontraron partidos próximos en ninguna competición ahora mismo.</div>`;
@@ -481,19 +408,19 @@ async function buildAllMatchesView(){
 
   const wrap = document.createElement('div');
   wrap.className = 'all-matches';
-  results.forEach(({comp, ev}) => {
+  results.forEach(({comp, fx}) => {
+    const {date, time} = fmtDate(fx.fixture.date);
     const row = document.createElement('div');
     row.className = 'all-match';
-    const [datePart, timePart] = fmtDate(ev.dateEvent, ev.strTime).split(' · ');
     row.innerHTML = `
       <div class="info">
         <span class="comp-tag">${comp.name}</span>
-        <span class="teams">${ev.strHomeTeam} vs ${ev.strAwayTeam}</span>
+        <span class="teams">${fx.teams.home.name} vs ${fx.teams.away.name}</span>
       </div>
-      <div class="when"><b>${datePart || ''}</b>${timePart || ''}</div>
+      <div class="when"><b>${date}</b>${time}</div>
     `;
     wrap.appendChild(row);
-    tickerItems.push(`${comp.name}: <b>${ev.strHomeTeam} vs ${ev.strAwayTeam}</b> (${fmtDate(ev.dateEvent, ev.strTime)})`);
+    tickerItems.push(`${comp.name}: <b>${fx.teams.home.name} vs ${fx.teams.away.name}</b> (${date} · ${time})`);
   });
   grid.innerHTML = '';
   grid.appendChild(wrap);
@@ -507,17 +434,12 @@ function renderTicker(){
 }
 
 async function loadTrack(trackKey){
-  if (trackKey === 'todos'){
-    await buildAllMatchesView();
-    return;
-  }
+  if (trackKey === 'todos'){ await buildAllMatchesView(); return; }
   grid.innerHTML = '';
   tickerItems = [];
   tickerEl.textContent = 'Cargando próximos partidos…';
 
   const cards = TRACKS[trackKey].map(buildCompCard);
-  // Carga los partidos de la primera tarjeta automáticamente (queda abierta),
-  // las demás se cargan al desplegarlas.
   if (cards[0]){
     cards[0].details.open = true;
     await cards[0].loadMatches();
