@@ -208,14 +208,14 @@ const API = 'https://www.thesportsdb.com/api/v1/json/123';
 // usados para encontrar la liga correcta dentro del catálogo completo.
 const TRACKS = {
   mexico: [
-    { name: 'Liga MX', match: ['mexican primera division', 'liga mx'] }
+    { name: 'Liga MX', match: ['mexican primera division', 'liga mx', 'mexico primera division'] }
   ],
   europa: [
     { name: 'Premier League (Inglaterra)', match: ['english premier league'] },
-    { name: 'La Liga (España)', match: ['spanish la liga', 'la liga'] },
+    { name: 'La Liga (España)', match: ['spanish la liga', 'la liga', 'laliga'] },
     { name: 'Serie A (Italia)', match: ['italian serie a'] },
     { name: 'Bundesliga (Alemania)', match: ['german bundesliga'] },
-    { name: 'Ligue 1 (Francia)', match: ['french ligue 1'] }
+    { name: 'Ligue 1 (Francia)', match: ['french ligue 1', 'ligue 1', 'ligue1'] }
   ],
   copas: [
     { name: 'UEFA Champions League', match: ['uefa champions league'] },
@@ -246,12 +246,20 @@ async function getLeagueCatalog(){
   return leagueCatalog;
 }
 
+function normalize(str){
+  return (str || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .replace(/[^a-z0-9]/g, ''); // quita espacios y puntuación
+}
+
 async function findLeagueId(matchFragments){
   const catalog = await getLeagueCatalog();
   for (const frag of matchFragments){
+    const fragNorm = normalize(frag);
     const found = catalog.find(l =>
       l.strSport === 'Soccer' &&
-      l.strLeague && l.strLeague.toLowerCase().includes(frag)
+      normalize(l.strLeague).includes(fragNorm)
     );
     if (found) return found.idLeague;
   }
