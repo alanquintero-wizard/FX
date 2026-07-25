@@ -102,20 +102,13 @@
   .match .teams{color:var(--chalk);}
   .match .when{
     font-family:'Space Mono',monospace; color:var(--amber); font-size:11.5px;
-    white-space:nowrap; margin-left:10px; text-align:right;
+    white-space:nowrap; margin-left:10px;
   }
-  .match .when small{display:block; color:var(--sage); font-size:9.5px;}
 
   .empty-note, .status-line{color:var(--sage); font-size:12.5px;}
   .status-line.loading{font-family:'Space Mono',monospace; font-size:11px;}
 
-  .group-label{
-    font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.5px;
-    text-transform:uppercase; color:var(--amber); margin:12px 0 6px;
-  }
-  .group-label:first-child{margin-top:0;}
-
-  table.standings{width:100%; border-collapse:collapse; font-size:12px; margin-bottom:4px;}
+  table.standings{width:100%; border-collapse:collapse; font-size:12px;}
   table.standings th{
     text-align:left; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.5px;
     text-transform:uppercase; color:var(--sage); padding:5px 4px; border-bottom:1px solid var(--line-strong);
@@ -166,37 +159,33 @@
   <div class="comp-grid" id="grid"></div>
 </main>
 
-<footer>Datos vía API-Football · plan gratuito: 100 peticiones/día</footer>
+<footer>Datos vía TheSportsDB · llave pública compartida (puede saturarse a ratos)</footer>
 
 <script>
-// ⚠️ Esta llave queda visible en el código fuente (inevitable en una app que
-// corre en el navegador). Restringe el uso agregando tu dominio de GitHub
-// Pages en el dashboard de API-Football → Security → Allowed referrers.
-const API_KEY = 'c1a3d17823eb72e232cd028f8b724536';
-const API_BASE = 'https://v3.football.api-sports.io';
-const HEADERS = { 'x-apisports-key': API_KEY };
+const API = 'https://www.thesportsdb.com/api/v1/json/123';
 
-// Competiciones a trackear. "search" es el texto para buscar la liga por
-// nombre; "country" ayuda a desambiguar cuando hay varias coincidencias.
+// IDs verificados directamente de TheSportsDB. "season" se usa para la tabla
+// de posiciones (lookuptable.php) — copas de eliminación directa o fuera de
+// ciclo (Copa América, Mundial de Clubes, Concacaf) pueden no tener tabla.
 const TRACKS = {
   mexico: [
-    { name: 'Liga MX', search: 'Liga MX', country: 'Mexico' }
+    { name: 'Liga MX', id: '4350', season: '2025-2026' }
   ],
   europa: [
-    { name: 'Premier League (Inglaterra)', search: 'Premier League', country: 'England' },
-    { name: 'La Liga (España)', search: 'La Liga', country: 'Spain' },
-    { name: 'Serie A (Italia)', search: 'Serie A', country: 'Italy' },
-    { name: 'Bundesliga (Alemania)', search: 'Bundesliga', country: 'Germany' },
-    { name: 'Ligue 1 (Francia)', search: 'Ligue 1', country: 'France' }
+    { name: 'Premier League (Inglaterra)', id: '4328', season: '2025-2026' },
+    { name: 'La Liga (España)', id: '4335', season: '2025-2026' },
+    { name: 'Serie A (Italia)', id: '4332', season: '2025-2026' },
+    { name: 'Bundesliga (Alemania)', id: '4331', season: '2025-2026' },
+    { name: 'Ligue 1 (Francia)', id: '4334', season: '2025-2026' }
   ],
   copas: [
-    { name: 'UEFA Champions League', search: 'UEFA Champions League' },
-    { name: 'UEFA Europa League', search: 'UEFA Europa League' },
-    { name: 'Concacaf Champions Cup', search: 'CONCACAF Champions' },
-    { name: 'Copa Libertadores', search: 'Copa Libertadores' },
-    { name: 'Copa Sudamericana', search: 'Copa Sudamericana' },
-    { name: 'Copa América', search: 'Copa America' },
-    { name: 'Mundial de Clubes FIFA', search: 'Club World Cup' }
+    { name: 'UEFA Champions League', id: '4480', season: '2025-2026' },
+    { name: 'UEFA Europa League', id: '4481', season: '2025-2026' },
+    { name: 'Concacaf Champions Cup', id: '4721', season: '2026' },
+    { name: 'Copa Libertadores', id: '4501', season: '2026' },
+    { name: 'Copa Sudamericana', id: '4724', season: '2026' },
+    { name: 'Copa América', id: '4499', season: '2024' },
+    { name: 'Mundial de Clubes FIFA', id: '4503', season: '2025' }
   ]
 };
 const ALL_COMPS = [...TRACKS.mexico, ...TRACKS.europa, ...TRACKS.copas];
@@ -205,66 +194,29 @@ const grid = document.getElementById('grid');
 const tickerEl = document.getElementById('ticker');
 let tickerItems = [];
 
-async function apiGet(path){
-  const res = await fetch(`${API_BASE}${path}`, { headers: HEADERS });
+function fmtDate(dateStr, timeStr){
+  if(!dateStr) return '';
+  try{
+    const d = new Date(`${dateStr}T${timeStr || '00:00:00'}`);
+    return d.toLocaleDateString('es-MX', {day:'2-digit', month:'short'}) +
+      (timeStr ? ' · ' + d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}) : '');
+  }catch(e){ return dateStr; }
+}
+
+async function fetchJSON(url){
+  const res = await fetch(url);
   if (!res.ok){
     const err = new Error('HTTP ' + res.status);
     err.status = res.status;
     throw err;
   }
-  const data = await res.json();
-  if (data.errors && Object.keys(data.errors).length){
-    const err = new Error(JSON.stringify(data.errors));
-    err.apiError = data.errors;
-    throw err;
-  }
-  return data;
+  return res.json();
 }
 
 function errMessage(e){
-  if (e && e.status === 429) return 'Límite diario de la API alcanzado (100/día en el plan gratuito).';
-  if (e && e.status === 401) return 'Llave de API inválida o no autorizada para este dominio.';
-  if (e && e.apiError) return 'La API rechazó la consulta: ' + JSON.stringify(e.apiError);
-  if (e && e.status) return `Error al consultar la API (código ${e.status}).`;
-  return 'No se pudo conectar con la API.';
-}
-
-function fmtDate(iso){
-  try{
-    const d = new Date(iso);
-    return {
-      date: d.toLocaleDateString('es-MX', {day:'2-digit', month:'short'}),
-      time: d.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'})
-    };
-  }catch(e){ return {date:'', time:''}; }
-}
-
-// ---------- Resolución de liga + temporada actual (se cachea) ----------
-const leagueCache = {};
-async function resolveLeague(comp){
-  const cacheKey = comp.search + '|' + (comp.country || '');
-  if (leagueCache[cacheKey]) return leagueCache[cacheKey];
-
-  const data = await apiGet(`/leagues?search=${encodeURIComponent(comp.search)}`);
-  let candidates = data.response || [];
-  if (comp.country){
-    const filtered = candidates.filter(c => c.country && c.country.name === comp.country);
-    if (filtered.length) candidates = filtered;
-  }
-  if (!candidates.length){
-    leagueCache[cacheKey] = null;
-    return null;
-  }
-  const chosen = candidates[0];
-  const seasons = chosen.seasons || [];
-  let season = seasons.find(s => s.current) || seasons[seasons.length - 1];
-  const resolved = {
-    id: chosen.league.id,
-    year: season ? season.year : null,
-    officialName: chosen.league.name
-  };
-  leagueCache[cacheKey] = resolved;
-  return resolved;
+  if (e && e.status === 429) return 'Límite de la API alcanzado (llave compartida). Intenta en un minuto.';
+  if (e && e.status) return `Error al consultar TheSportsDB (código ${e.status}).`;
+  return 'No se pudo conectar con TheSportsDB.';
 }
 
 // ---------- Tarjeta de competición (acordeón) ----------
@@ -298,25 +250,19 @@ function buildCompCard(comp){
     if (matchesLoaded) return;
     matchesLoaded = true;
     try{
-      const league = await resolveLeague(comp);
-      if (!league || !league.year){
-        viewMatches.innerHTML = `<div class="empty-note">No se encontró "${comp.name}" en API-Football.</div>`;
-        return;
-      }
-      const data = await apiGet(`/fixtures?league=${league.id}&season=${league.year}&next=6`);
-      const fixtures = data.response || [];
-      if (!fixtures.length){
+      const data = await fetchJSON(`${API}/eventsnextleague.php?id=${comp.id}`);
+      const events = (data && data.events) ? data.events.slice(0,6) : [];
+      if (!events.length){
         viewMatches.innerHTML = `<div class="empty-note">Sin partidos próximos programados (puede estar en receso).</div>`;
         return;
       }
       viewMatches.innerHTML = '';
-      fixtures.forEach(fx => {
-        const {date, time} = fmtDate(fx.fixture.date);
+      events.forEach(ev => {
         const row = document.createElement('div');
         row.className = 'match';
         row.innerHTML = `
-          <span class="teams">${fx.teams.home.name} vs ${fx.teams.away.name}</span>
-          <span class="when">${date}<small>${time}</small></span>
+          <span class="teams">${ev.strHomeTeam} vs ${ev.strAwayTeam}</span>
+          <span class="when">${fmtDate(ev.dateEvent, ev.strTime)}</span>
         `;
         viewMatches.appendChild(row);
       });
@@ -329,35 +275,25 @@ function buildCompCard(comp){
     if (tableLoaded) return;
     tableLoaded = true;
     try{
-      const league = await resolveLeague(comp);
-      if (!league || !league.year){
-        viewTable.innerHTML = `<div class="empty-note">No se encontró "${comp.name}" en API-Football.</div>`;
+      const data = await fetchJSON(`${API}/lookuptable.php?l=${comp.id}&s=${comp.season}`);
+      const rows = (data && data.table) ? data.table : [];
+      if (!rows.length){
+        viewTable.innerHTML = `<div class="empty-note">Tabla no disponible para esta competición (torneo de eliminación directa o fuera de temporada).</div>`;
         return;
       }
-      const data = await apiGet(`/standings?league=${league.id}&season=${league.year}`);
-      const leagueData = data.response && data.response[0] ? data.response[0].league : null;
-      const groups = leagueData && leagueData.standings ? leagueData.standings : [];
-      if (!groups.length || !groups[0].length){
-        viewTable.innerHTML = `<div class="empty-note">Tabla no disponible (torneo de eliminación directa o fuera de temporada).</div>`;
-        return;
-      }
-      let html = '';
-      groups.forEach((group, gi) => {
-        if (groups.length > 1) html += `<div class="group-label">Grupo ${gi + 1}</div>`;
-        html += `<table class="standings"><thead><tr>
-          <th class="num">#</th><th>Equipo</th><th class="num">PJ</th><th class="num">DG</th><th class="num">Pts</th>
-        </tr></thead><tbody>`;
-        group.forEach(r => {
-          html += `<tr>
-            <td class="num">${r.rank}</td>
-            <td class="team">${r.team.name}</td>
-            <td class="num">${r.all.played}</td>
-            <td class="num">${r.goalsDiff}</td>
-            <td class="pts">${r.points}</td>
-          </tr>`;
-        });
-        html += '</tbody></table>';
+      let html = `<table class="standings"><thead><tr>
+        <th class="num">#</th><th>Equipo</th><th class="num">PJ</th><th class="num">DG</th><th class="num">Pts</th>
+      </tr></thead><tbody>`;
+      rows.forEach(r => {
+        html += `<tr>
+          <td class="num">${r.intRank}</td>
+          <td class="team">${r.strTeam}</td>
+          <td class="num">${r.intPlayed}</td>
+          <td class="num">${r.intGoalDifference}</td>
+          <td class="pts">${r.intPoints}</td>
+        </tr>`;
       });
+      html += '</tbody></table>';
       viewTable.innerHTML = html;
     }catch(e){
       viewTable.innerHTML = `<div class="empty-note">${errMessage(e)}</div>`;
@@ -391,14 +327,18 @@ async function buildAllMatchesView(){
   const results = [];
   for (const comp of ALL_COMPS){
     try{
-      const league = await resolveLeague(comp);
-      if (!league || !league.year) continue;
-      const data = await apiGet(`/fixtures?league=${league.id}&season=${league.year}&next=5`);
-      (data.response || []).forEach(fx => results.push({ comp, fx }));
-    }catch(e){ /* se omite esta competición en la vista combinada si falla */ }
+      const data = await fetchJSON(`${API}/eventsnextleague.php?id=${comp.id}`);
+      const events = (data && data.events) ? data.events.slice(0,5) : [];
+      events.forEach(ev => results.push({ comp, ev }));
+    }catch(e){ /* se omite silenciosamente esta competición en la vista combinada */ }
+    await new Promise(r => setTimeout(r, 300));
   }
 
-  results.sort((a,b) => new Date(a.fx.fixture.date) - new Date(b.fx.fixture.date));
+  results.sort((a,b) => {
+    const da = new Date(`${a.ev.dateEvent}T${a.ev.strTime || '00:00:00'}`);
+    const db = new Date(`${b.ev.dateEvent}T${b.ev.strTime || '00:00:00'}`);
+    return da - db;
+  });
 
   if (!results.length){
     grid.innerHTML = `<div class="empty-note">No se encontraron partidos próximos en ninguna competición ahora mismo.</div>`;
@@ -408,19 +348,19 @@ async function buildAllMatchesView(){
 
   const wrap = document.createElement('div');
   wrap.className = 'all-matches';
-  results.forEach(({comp, fx}) => {
-    const {date, time} = fmtDate(fx.fixture.date);
+  results.forEach(({comp, ev}) => {
     const row = document.createElement('div');
     row.className = 'all-match';
+    const [datePart, timePart] = fmtDate(ev.dateEvent, ev.strTime).split(' · ');
     row.innerHTML = `
       <div class="info">
         <span class="comp-tag">${comp.name}</span>
-        <span class="teams">${fx.teams.home.name} vs ${fx.teams.away.name}</span>
+        <span class="teams">${ev.strHomeTeam} vs ${ev.strAwayTeam}</span>
       </div>
-      <div class="when"><b>${date}</b>${time}</div>
+      <div class="when"><b>${datePart || ''}</b>${timePart || ''}</div>
     `;
     wrap.appendChild(row);
-    tickerItems.push(`${comp.name}: <b>${fx.teams.home.name} vs ${fx.teams.away.name}</b> (${date} · ${time})`);
+    tickerItems.push(`${comp.name}: <b>${ev.strHomeTeam} vs ${ev.strAwayTeam}</b> (${fmtDate(ev.dateEvent, ev.strTime)})`);
   });
   grid.innerHTML = '';
   grid.appendChild(wrap);
