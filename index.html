@@ -261,6 +261,13 @@ async function loadCompetition(comp){
 
   try{
     const res = await fetch(`${API}/eventsnextleague.php?id=${id}`);
+    if (!res.ok){
+      statusLine.textContent = res.status === 429
+        ? 'Límite de la API alcanzado (llave gratuita compartida). Intenta de nuevo en un minuto.'
+        : `Error al consultar TheSportsDB (código ${res.status}).`;
+      statusLine.classList.remove('loading');
+      return card;
+    }
     const data = await res.json();
     const events = (data && data.events) ? data.events.slice(0,5) : [];
 
@@ -286,7 +293,7 @@ async function loadCompetition(comp){
       renderTicker();
     }
   }catch(e){
-    statusLine.textContent = 'No se pudieron cargar los partidos (revisa tu conexión).';
+    statusLine.textContent = 'No se pudo conectar con TheSportsDB (revisa tu conexión o intenta de nuevo).';
     statusLine.classList.remove('loading');
   }
 
@@ -306,6 +313,7 @@ async function loadTrack(trackKey){
   const comps = TRACKS[trackKey];
   for (const comp of comps){
     await loadCompetition(comp);
+    await new Promise(r => setTimeout(r, 350)); // pequeña pausa para no saturar la llave compartida
   }
   if (!tickerItems.length){
     tickerEl.textContent = 'No hay partidos próximos disponibles para esta sección por ahora.';
